@@ -6,15 +6,17 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 
 module.exports = {
-    entry: __dirname + "/src/app/index.js", // webpack entry point. Module to start building dependency graph
+    entry: ["babel-polyfill", __dirname + "/src/app/index.js"],
     resolve: {
         alias: {
             styles: path.resolve(__dirname, 'src/styles'),
+            modules: path.resolve(__dirname, 'src/app/modules'),
         }
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',  // Name of generated bundle after build
+        chunkFilename: '[name].bundle.js',
         publicPath: '/' // public URL of the output directory when referenced in a browser
     },
     module: {  // where we defined file patterns and their loaders
@@ -39,7 +41,19 @@ module.exports = {
     ],
     devServer: {  // configuration for webpack-dev-server
         contentBase: './src/public',  //source of static assets
-        port: 7700, // port to run dev-server
-    } 
+        port: 8000, // port to run dev-server
+    },
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "vendors",
+                    chunks: "all"
+                }
+            }
+        }
+    },
+
 };
 
