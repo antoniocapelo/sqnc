@@ -1,6 +1,32 @@
 :root {
-    --color-primary: #444;
-    --color-secondary: #333;
+    --color-secondary: #0a4040;
+    --color-primary: #aaaf9f;
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.645, 0.045, 0.355, 1), transform 0s linear 0.5s;
+    transform: translateX(100vw);
+    will-change: opacity;
+}
+
+.loader.loading {
+    opacity: 1;
+    transition: opacity 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transform: translateX(0);
+}
+
+.loader h2 {
+    font-size: 3rem;
+    text-transform: lowercase;
 }
 
 html, body {

@@ -1,7 +1,25 @@
 import 'babel-polyfill';
 import 'styles/main.css';
-
 import 'modules/three';
+
+// Utils
+
+const timeoutPromise = () => new Promise((resolve) => setTimeout(resolve, 1000));
+
+const addClass = (el, className) => {
+    if (el.classList)
+        el.classList.add(className);
+    else
+        el.className += ' ' + className;
+}
+
+const removeClass = (el, className) => {
+    if (el.classList)
+        el.classList.remove(className);
+    else
+        el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+}
+
 
 async function getComponent(num) {
     const n = num < 10 ? `0${num}` : num;
@@ -18,6 +36,7 @@ class Main {
         })
         this.startTime = 0;
         this.mainElement = document.querySelector('main');
+        this.loader = document.querySelector('.loader');
         this.clock = new THREE.Clock(true);
         this.loadModule()
             .then(this.update);
@@ -28,10 +47,18 @@ class Main {
         this.module.draw(this.startTime);
     }
 
+    setLoading = () => addClass(this.loader, 'loading');
+    unsetLoading = () => removeClass(this.loader, 'loading');
+
     loadModule = () => {
         const num = window.location.hash.substr(1) || 1;
-        return getComponent(num)
-            .then((mod) => {
+        this.setLoading();
+        return Promise.all([
+            timeoutPromise(),
+            getComponent(num),
+        ])
+            .then(([_, mod]) => {
+                this.unsetLoading();
                 this.module = mod; 
                 this.mainElement.appendChild(this.module.canvas);
             });
