@@ -44,7 +44,7 @@ class Main {
 
     update = () => {
         requestAnimationFrame(this.update);
-        this.module.draw(this.startTime);
+        this.module.draw(this.startTime, Date.now());
     }
 
     setLoading = () => addClass(this.loader, 'loading');
